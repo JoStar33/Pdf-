@@ -1,5 +1,5 @@
-import React from 'react';
+import PdfListContainer from '@/containers/PdfListContainer';
 
 export default function PdfListPage() {
-  return <>PdfListPage</>;
+  return <PdfListContainer />;
 }

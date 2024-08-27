@@ -1,9 +1,7 @@
-import styled from 'styled-components';
+import PdfList from '@/components/pdfList';
+import { usePdfDocumentStore } from '@/stores/pdfDocument';
 
 export default function PdfListContainer() {
-  return <S.PdfListContainer>PdfListContainer</S.PdfListContainer>;
+  const { pdfDocumentList } = usePdfDocumentStore();
+  return <PdfList pdfDocumentList={pdfDocumentList} />;
 }
-
-const S = {
-  PdfListContainer: styled.div``,
-};
