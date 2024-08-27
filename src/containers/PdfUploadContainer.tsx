@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Document, Page } from 'react-pdf';
 import React from 'react';
+import PdfUpload from '@/components/pdfUpload';
+import PdfPageController from '@/components/pdfUpload/PdfPageController';
 
 const initPdfState = {
   selectedFile: undefined,
@@ -9,7 +9,7 @@ const initPdfState = {
   pdfData: undefined,
 };
 
-interface PdfState {
+export interface PdfState {
   selectedFile?: File;
   numPages: number;
   pageNumber: number;
@@ -18,6 +18,7 @@ interface PdfState {
 
 export default function PdfUploadContainer() {
   const [pdfState, setPdfState] = React.useState<PdfState>(initPdfState);
+  const { pageNumber, numPages } = pdfState;
 
   const handleFileLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -30,25 +31,13 @@ export default function PdfUploadContainer() {
     setPdfState((prev) => ({ ...prev, numPages }));
   };
 
-  const { pdfData, pageNumber, numPages } = pdfState;
+  const setPage = (page: number) => {
+    setPdfState((prev) => ({ ...prev, pageNumber: page }));
+  };
 
   return (
-    <S.PdfUploadContainer>
-      {!pdfData && <input type="file" accept=".pdf" onChange={handleFileLoad} />}
-      {pdfData && (
-        <>
-          <Document file={pdfData} onLoadSuccess={handleDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} />
-          </Document>
-          <p>
-            Page {pageNumber} of {numPages}
-          </p>
-        </>
-      )}
-    </S.PdfUploadContainer>
+    <PdfUpload pdfState={pdfState} handleDocumentLoadSuccess={handleDocumentLoadSuccess} handleFileLoad={handleFileLoad}>
+      <PdfPageController setPage={setPage} currentPage={pageNumber} lastPage={numPages} />
+    </PdfUpload>
   );
 }
-
-const S = {
-  PdfUploadContainer: styled.div``,
-};
