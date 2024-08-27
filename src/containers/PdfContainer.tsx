@@ -1,7 +1,7 @@
 import React from 'react';
-import PdfUpload from '@/components/pdfUpload';
-import PdfPageController from '@/components/pdfUpload/PdfPageController';
-import ImageObject from '@/components/objects/ImageObject';
+import Pdf from '@/components/pdf';
+import PdfPageController from '@/components/pdf/PdfPageController';
+import ImageObject from '@/components/pdfObjects/ImageObject';
 
 const initPdfState = {
   numPages: 1,
@@ -15,7 +15,7 @@ export interface PdfState {
   pdfData?: File;
 }
 
-export default function PdfUploadContainer() {
+export default function PdfContainer() {
   const [pdfState, setPdfState] = React.useState<PdfState>(initPdfState);
   const { pageNumber, numPages } = pdfState;
 
@@ -35,9 +35,9 @@ export default function PdfUploadContainer() {
   };
 
   return (
-    <PdfUpload pdfState={pdfState} handleDocumentLoadSuccess={handleDocumentLoadSuccess} handleFileLoad={handleFileLoad}>
+    <Pdf pdfState={pdfState} handleDocumentLoadSuccess={handleDocumentLoadSuccess} handleFileLoad={handleFileLoad}>
       <ImageObject />
       <PdfPageController setPage={setPage} currentPage={pageNumber} lastPage={numPages} />
-    </PdfUpload>
+    </Pdf>
   );
 }

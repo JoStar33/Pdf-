@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Document, Page } from 'react-pdf';
-import { PdfState } from '@/containers/PdfUploadContainer';
+import { PdfState } from '@/containers/PdfContainer';
 
 interface Props {
   pdfState: PdfState;
@@ -9,18 +9,18 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function PdfUpload({ pdfState, handleFileLoad, handleDocumentLoadSuccess, children }: Props) {
+export default function Pdf({ pdfState, handleFileLoad, handleDocumentLoadSuccess, children }: Props) {
   const { pdfData, pageNumber, numPages } = pdfState;
 
   if (!pdfData)
     return (
-      <S.PdfUpload>
+      <S.Pdf>
         <input type="file" accept=".pdf" onChange={handleFileLoad} />
-      </S.PdfUpload>
+      </S.Pdf>
     );
 
   return (
-    <S.PdfUpload>
+    <S.Pdf>
       <Document file={pdfData} onLoadSuccess={handleDocumentLoadSuccess}>
         {new Array(numPages).fill('').map((_, index) => {
           if (pageNumber === index + 1) return <Page key={index} pageNumber={index + 1} />;
@@ -28,12 +28,12 @@ export default function PdfUpload({ pdfState, handleFileLoad, handleDocumentLoad
         })}
       </Document>
       {children}
-    </S.PdfUpload>
+    </S.Pdf>
   );
 }
 
 const S = {
-  PdfUpload: styled.div`
+  Pdf: styled.div`
     padding: 10px;
     position: relative;
   `,
