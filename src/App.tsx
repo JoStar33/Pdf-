@@ -6,12 +6,10 @@ import Layout from '@/components/layouts';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
-function App() {
+export default function App() {
   return (
     <Layout>
       <PdfUploadPage />
     </Layout>
   );
 }
-
-export default App;

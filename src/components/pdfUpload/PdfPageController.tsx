@@ -35,7 +35,7 @@ export default function PdfPageController({ currentPage, lastPage, setPage }: Pr
         <IoIosArrowBack />
       </button>
       {new Array(lastPage).fill('').map((_, index) => (
-        <span className="page-element" style={currentPageStyle(index + 1)} onClick={() => handleClickPageNumber(index + 1)}>
+        <span key={index} className="page-element" style={currentPageStyle(index + 1)} onClick={() => handleClickPageNumber(index + 1)}>
           {index + 1}
         </span>
       ))}

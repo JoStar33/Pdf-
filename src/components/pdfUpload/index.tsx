@@ -23,7 +23,7 @@ export default function PdfUpload({ pdfState, handleFileLoad, handleDocumentLoad
     <S.PdfUpload>
       <Document file={pdfData} onLoadSuccess={handleDocumentLoadSuccess}>
         {new Array(numPages).fill('').map((_, index) => {
-          if (pageNumber === index + 1) return <Page pageNumber={index + 1} />;
+          if (pageNumber === index + 1) return <Page key={index} pageNumber={index + 1} />;
           return <></>;
         })}
       </Document>
