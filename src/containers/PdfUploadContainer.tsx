@@ -3,14 +3,12 @@ import PdfUpload from '@/components/pdfUpload';
 import PdfPageController from '@/components/pdfUpload/PdfPageController';
 
 const initPdfState = {
-  selectedFile: undefined,
   numPages: 1,
   pageNumber: 1,
   pdfData: undefined,
 };
 
 export interface PdfState {
-  selectedFile?: File;
   numPages: number;
   pageNumber: number;
   pdfData?: File;
