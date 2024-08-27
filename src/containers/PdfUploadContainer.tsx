@@ -1,6 +1,7 @@
 import React from 'react';
 import PdfUpload from '@/components/pdfUpload';
 import PdfPageController from '@/components/pdfUpload/PdfPageController';
+import ImageObject from '@/components/objects/ImageObject';
 
 const initPdfState = {
   numPages: 1,
@@ -35,6 +36,7 @@ export default function PdfUploadContainer() {
 
   return (
     <PdfUpload pdfState={pdfState} handleDocumentLoadSuccess={handleDocumentLoadSuccess} handleFileLoad={handleFileLoad}>
+      <ImageObject />
       <PdfPageController setPage={setPage} currentPage={pageNumber} lastPage={numPages} />
     </PdfUpload>
   );

@@ -35,5 +35,6 @@ export default function PdfUpload({ pdfState, handleFileLoad, handleDocumentLoad
 const S = {
   PdfUpload: styled.div`
     padding: 10px;
+    position: relative;
   `,
 };
