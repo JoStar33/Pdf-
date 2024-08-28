@@ -1,6 +1,5 @@
 import React from 'react';
 import Pdf from '@/components/pdf';
-import PdfPageController from '@/components/pdf/PdfPageController';
 import useIdGetter from '@/hooks/useIdGetter';
 import { usePdfDocumentStore } from '@/stores/pdfDocument';
 import { useNavigate } from 'react-router-dom';
@@ -15,12 +14,10 @@ import PdfObjectContainer from './PdfObjectContainer';
 
 const initPdfState = {
   numPages: 1,
-  pageNumber: 1,
 };
 
 export interface PdfPageInfo {
   numPages: number;
-  pageNumber: number;
 }
 
 const defaultDocument = {
@@ -37,16 +34,11 @@ export default function PdfContainer() {
   const findPdfDocument = pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument;
   const currentObjectLength = findPdfDocument.objects.length;
   const [pdfPageInfo, setPdfPageInfo] = React.useState<PdfPageInfo>(initPdfState);
-  const { pageNumber, numPages } = pdfPageInfo;
 
   const createPdfAsArrayBuffer = (file: string) => {
     createPdf({
       file,
     });
-  };
-
-  const setPage = (page: number) => {
-    setPdfPageInfo((prev) => ({ ...prev, pageNumber: page }));
   };
 
   const handleFileLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +82,6 @@ export default function PdfContainer() {
         handleDropFileLoad={handleDropFileLoad}
       >
         <PdfObjectContainer objects={findPdfDocument.objects} />
-        <PdfPageController setPage={setPage} currentPage={pageNumber} lastPage={numPages} />
       </Pdf>
     </PdfWrapper>
   );

@@ -11,7 +11,8 @@ export default function PdfAside({ children }: Props) {
 const S = {
   PdfAside: styled.div`
     height: 100%;
-    width: 30%;
+    min-width: calc(25% - 15px);
+    width: calc(25% - 15px);
     margin: 5px 0px 5px 5px;
     display: flex;
     flex-direction: column;

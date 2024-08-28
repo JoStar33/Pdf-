@@ -31,6 +31,7 @@ const S = {
     aspect-ratio: 1.2;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
     .pdf-card {
       &__main {
         padding: 10px;
