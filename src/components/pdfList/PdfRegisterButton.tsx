@@ -14,7 +14,7 @@ export default function PdfRegisterButton() {
   return (
     <S.PdfRegisterButton onClick={handleClickCard}>
       <div className="register-button">
-        <AiOutlinePlus size={25} />
+        <AiOutlinePlus size={70} />
       </div>
     </S.PdfRegisterButton>
   );

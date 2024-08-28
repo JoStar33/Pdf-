@@ -24,6 +24,8 @@ PDF를 웹상에 올려 확인하고 수정할 수 있는 페이지
 - zustand
 - swiper.js
 - react-pdf
+- dayjs
+- framer-motion
 
 ### 설치해야할 라이브러리
 

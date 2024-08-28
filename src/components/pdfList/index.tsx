@@ -11,9 +11,11 @@ export default function PdfList({ pdfDocumentList }: Props) {
   return (
     <S.PdfList>
       <PdfRegisterButton />
-      {pdfDocumentList.map((element) => (
-        <PdfCard key={element.id} element={element} />
-      ))}
+      {pdfDocumentList
+        .sort((a, b) => (a.id < b.id ? -1 : 1))
+        .map((element) => (
+          <PdfCard key={element.id} element={element} />
+        ))}
     </S.PdfList>
   );
 }
