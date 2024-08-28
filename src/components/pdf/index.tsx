@@ -25,7 +25,7 @@ export default function Pdf({ pdfPageInfo, pdfDocument, handleDropFileLoad, hand
 
   if (!file)
     return (
-      <S.Pdf>
+      <S.Pdf style={{ maxWidth: '100%', width: '100%', display: 'flex', justifyContent: 'center' }}>
         <PdfFileUploader handleDropFileLoad={handleDropFileLoad} handleFileLoad={handleFileLoad} />
       </S.Pdf>
     );

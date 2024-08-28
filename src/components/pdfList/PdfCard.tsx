@@ -28,7 +28,6 @@ const S = {
   PdfCard: styled.div`
     width: calc(33% - 10px);
     margin: 5px;
-    aspect-ratio: 1.2;
     display: flex;
     flex-direction: column;
     cursor: pointer;
@@ -37,7 +36,7 @@ const S = {
         padding: 10px;
         border-radius: 5px;
         width: 100%;
-        height: 100%;
+        aspect-ratio: 0.8;
         margin-bottom: 5px;
       }
       &__title {

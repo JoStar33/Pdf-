@@ -22,5 +22,6 @@ const S = {
   PdfList: styled.div`
     display: flex;
     flex-wrap: wrap;
+    height: 100%;
   `,
 };
