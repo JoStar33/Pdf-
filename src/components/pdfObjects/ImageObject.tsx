@@ -7,6 +7,11 @@ interface Props {
   objectElement: PdfImageObject;
 }
 
+/**
+ * 랜덤 보리이미지 컴포넌트
+ * @param objectElement 오브젝트
+ * @returns 이미지 컴포넌트
+ */
 export default function ImageObject({ objectElement }: Props) {
   const { objectRef, handleDragOver, handleDragStart, handleDragEnd } = usePdfObjectEventHandler<HTMLImageElement>(objectElement);
   const { top, left, width, height, src } = objectElement;
