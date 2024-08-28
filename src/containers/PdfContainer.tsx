@@ -8,6 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { PdfDocument } from '@/types/pdfDocument';
 import changeFileToBase64 from '@/utils/changeFileToBase64';
 import routerPath from '@/constants/routerPath';
+import PdfWrapper from '@/components/pdf/PdfWrapper';
+import PdfAside from '@/components/pdf/aside';
+import RandomImageButton from '@/components/pdf/aside/RandomImageButton';
+import randomImageUrl from '@/constants/randomImageUrl';
 
 const initPdfState = {
   numPages: 1,
@@ -27,10 +31,9 @@ const defaultDocument = {
 } as unknown as PdfDocument;
 
 export default function PdfContainer() {
-  // const { pathname } = useLocation();
   const navigator = useNavigate();
   const { id } = useIdGetter();
-  const { pdfDocumentList, uniqueId, createPdf } = usePdfDocumentStore();
+  const { pdfDocumentList, uniqueId, createPdf, createImageObject } = usePdfDocumentStore();
   const findPdfDocument = pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument;
   const [pdfPageInfo, setPdfPageInfo] = React.useState<PdfPageInfo>(initPdfState);
   const { pageNumber, numPages } = pdfPageInfo;
@@ -39,6 +42,10 @@ export default function PdfContainer() {
     createPdf({
       file,
     });
+  };
+
+  const setPage = (page: number) => {
+    setPdfPageInfo((prev) => ({ ...prev, pageNumber: page }));
   };
 
   const handleFileLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,24 +64,36 @@ export default function PdfContainer() {
     navigator(`${routerPath.PDF}/${uniqueId}`);
   };
 
+  const handleGenerateRandomImage = () => {
+    if (!id) return;
+    const randomIndex = Math.floor(Math.random() * 5);
+    createImageObject({ src: randomImageUrl[randomIndex] }, id);
+  };
+
   const handleDocumentLoadSuccess = (pdf: { numPages: number }) => {
     setPdfPageInfo((prev) => ({ ...prev, numPages: pdf.numPages }));
   };
 
-  const setPage = (page: number) => {
-    setPdfPageInfo((prev) => ({ ...prev, pageNumber: page }));
-  };
-
   return (
-    <Pdf
-      pdfDocument={findPdfDocument}
-      pdfPageInfo={pdfPageInfo}
-      handleDocumentLoadSuccess={handleDocumentLoadSuccess}
-      handleFileLoad={handleFileLoad}
-      handleDropFileLoad={handleDropFileLoad}
-    >
-      <ImageObject />
-      <PdfPageController setPage={setPage} currentPage={pageNumber} lastPage={numPages} />
-    </Pdf>
+    <PdfWrapper>
+      {findPdfDocument.file && (
+        <PdfAside>
+          <RandomImageButton handleClick={handleGenerateRandomImage} />
+        </PdfAside>
+      )}
+      <Pdf
+        pdfDocument={findPdfDocument}
+        pdfPageInfo={pdfPageInfo}
+        handleDocumentLoadSuccess={handleDocumentLoadSuccess}
+        handleFileLoad={handleFileLoad}
+        handleDropFileLoad={handleDropFileLoad}
+      >
+        {findPdfDocument.objects.map((objectElement) => {
+          if ('src' in objectElement) return <ImageObject key={objectElement.id} objectElement={objectElement} />;
+          return <></>;
+        })}
+        <PdfPageController setPage={setPage} currentPage={pageNumber} lastPage={numPages} />
+      </Pdf>
+    </PdfWrapper>
   );
 }

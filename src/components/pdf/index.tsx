@@ -26,7 +26,7 @@ export default function Pdf({ pdfPageInfo, pdfDocument, handleDropFileLoad, hand
 
   return (
     <S.Pdf>
-      <Document className="pdf-viewer" file={file} onLoadSuccess={handleDocumentLoadSuccess}>
+      <Document className="pdf-viewer drop-zone" file={file} onLoadSuccess={handleDocumentLoadSuccess}>
         {new Array(numPages).fill('').map((_, index) => {
           if (pageNumber === index + 1) return <Page key={index} pageNumber={index + 1} />;
           return <></>;
@@ -39,7 +39,8 @@ export default function Pdf({ pdfPageInfo, pdfDocument, handleDropFileLoad, hand
 
 const S = {
   Pdf: styled.div`
-    padding: 10px;
+    margin: 5px;
     position: relative;
+    width: 100%;
   `,
 };

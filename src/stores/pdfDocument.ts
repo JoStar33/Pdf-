@@ -43,14 +43,18 @@ export const usePdfDocumentStore = create(
           if (!findObject) throw new Error('오브젝트를 찾을 수 없습니다.');
           const modifiedPdfObject = {
             ...findObject,
-            ...coordinate,
+            top: coordinate.top,
+            left: coordinate.left,
           };
           return {
             ...prev,
             uniqueId: prev.uniqueId + 1,
             pdfDocumentList: [
               ...prev.pdfDocumentList.filter((pdfDocument) => pdfDocument.id !== pdfDocumentId),
-              { ...findPdfDocument, objects: [...findPdfDocument.objects, modifiedPdfObject] },
+              {
+                ...findPdfDocument,
+                objects: [...findPdfDocument.objects.filter((objectElement) => objectElement.id !== objectId), modifiedPdfObject],
+              },
             ],
           };
         }),

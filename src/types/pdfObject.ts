@@ -5,7 +5,7 @@ export interface ObjectCoordinate {
   left: string;
 }
 
-interface PdfObject extends ObjectCoordinate {
+export interface PdfObject extends ObjectCoordinate {
   id: number;
   type: PdfObjectTypes;
   width: string;

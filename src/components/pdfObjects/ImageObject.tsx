@@ -1,17 +1,27 @@
 import usePdfObjectEventHandler from '@/hooks/usePdfObjectEventHandler';
+import { PdfImageObject } from '@/types/pdfObject';
 import styled from 'styled-components';
 
-export default function ImageObject() {
-  const { objectRef, handleDragOver, handleDragStart, handleDragEnd } = usePdfObjectEventHandler<HTMLImageElement>();
+interface Props {
+  objectElement: PdfImageObject;
+}
+
+export default function ImageObject({ objectElement }: Props) {
+  const { objectRef, handleDragOver, handleDragStart, handleDragEnd } = usePdfObjectEventHandler<HTMLImageElement>(objectElement);
+  const { top, left, src } = objectElement;
 
   return (
     <S.ImageObject
+      style={{
+        top,
+        left,
+      }}
       draggable={true}
       ref={objectRef}
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      src="/images/boriImage1.jpg"
+      src={src}
     />
   );
 }
