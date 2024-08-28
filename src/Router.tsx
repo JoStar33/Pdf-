@@ -7,7 +7,7 @@ export default function Router() {
   return (
     <Routes>
       <Route path={routerPath.HOME} element={<PdfListPage />} />
-      <Route path={routerPath.PDF} element={<PdfPage />} />
+      <Route path={`${routerPath.PDF}/*`} element={<PdfPage />} />
     </Routes>
   );
 }

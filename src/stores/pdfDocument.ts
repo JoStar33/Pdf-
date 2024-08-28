@@ -24,7 +24,7 @@ export const usePdfDocumentStore = create(
           uniqueId: prev.uniqueId + 1,
           pdfDocumentList: [
             ...prev.pdfDocumentList,
-            { ...pdfDocument, id: prev.uniqueId, objects: [], createdAt: dateFormat.date5(String(new Date())) },
+            { ...pdfDocument, id: prev.uniqueId, objects: [], createdAt: dateFormat.date5(String(new Date())), file: pdfDocument.file },
           ],
         })),
       modifyPdf: (pdfDocument, pdfDocumentId) =>

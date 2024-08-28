@@ -27,6 +27,7 @@ export default function PdfCard({ element }: Props) {
 const S = {
   PdfCard: styled.div`
     width: calc(33% - 10px);
+    margin: 5px;
     aspect-ratio: 1.2;
     display: flex;
     flex-direction: column;
@@ -35,6 +36,7 @@ const S = {
         padding: 10px;
         border-radius: 5px;
         width: 100%;
+        height: 100%;
         margin-bottom: 5px;
       }
       &__title {

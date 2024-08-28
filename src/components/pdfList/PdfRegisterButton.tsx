@@ -23,12 +23,16 @@ export default function PdfRegisterButton() {
 const S = {
   PdfRegisterButton: styled.div`
     width: calc(33% - 10px);
+    margin: 5px;
     aspect-ratio: 1.2;
     display: flex;
     align-items: center;
     .register-button {
+      cursor: pointer;
       width: 100%;
+      border-radius: 5px;
       aspect-ratio: 1;
+      background-color: ${(props) => props.theme.colors.gray};
       ${flexCenter}
     }
   `,

@@ -2,17 +2,17 @@ import { PdfImageObject, PdfTextObject } from './pdfObject';
 
 export interface PdfDocument {
   id: number;
-  file: File;
+  file: string;
   title?: string;
   createdAt: string;
   objects: (PdfImageObject | PdfTextObject)[];
 }
 
 export interface PdfDocumentCreateForm {
-  file: File;
+  file: string;
 }
 
 export interface PdfDocumentModifyForm {
-  file?: File;
+  file?: string;
   title?: string;
 }
