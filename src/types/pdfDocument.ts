@@ -1,11 +1,11 @@
-import { PdfImageObject, PdfTextObject } from './pdfObject';
+import { PdfAllObject } from './pdfObject';
 
 export interface PdfDocument {
   id: number;
   file: string;
   title?: string;
   createdAt: string;
-  objects: (PdfImageObject | PdfTextObject)[];
+  objects: PdfAllObject[];
 }
 
 export interface PdfDocumentCreateForm {

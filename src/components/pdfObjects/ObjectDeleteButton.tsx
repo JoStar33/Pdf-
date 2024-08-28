@@ -19,7 +19,7 @@ export default function ObjectDeleteButton({ objectId }: Props) {
 
   return (
     <S.ObjectDeleteButton onClick={handleClickDelete}>
-      <MdDelete size={15} />
+      <MdDelete size={13} />
     </S.ObjectDeleteButton>
   );
 }
@@ -28,10 +28,10 @@ const S = {
   ObjectDeleteButton: styled.button`
     padding: 5px;
     position: absolute;
-    right: -10px;
-    top: -10px;
+    right: 0px;
+    top: 0px;
     ${flexCenter}
     cursor: pointer;
-    border-radius: 100px;
+    border-radius: 4px;
   `,
 };

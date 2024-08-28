@@ -1,8 +1,8 @@
 import ImageObject from '@/components/pdfObjects/ImageObject';
-import { PdfImageObject, PdfTextObject } from '@/types/pdfObject';
+import { PdfAllObject } from '@/types/pdfObject';
 
 interface Props {
-  objects: (PdfImageObject | PdfTextObject)[];
+  objects: PdfAllObject[];
 }
 
 export default function PdfObjectContainer({ objects }: Props) {

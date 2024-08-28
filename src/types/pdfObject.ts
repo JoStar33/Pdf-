@@ -20,6 +20,8 @@ export interface PdfTextObject extends PdfObject {
   text: string;
 }
 
+export type PdfAllObject = PdfImageObject | PdfTextObject;
+
 export interface PdfImageObjectCreateForm {
   src: string;
 }

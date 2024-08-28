@@ -2,10 +2,11 @@ import React from 'react';
 import useIdGetter from './useIdGetter';
 import { PdfObject } from '@/types/pdfObject';
 import { usePdfDocumentStore } from '@/stores/pdfDocument';
+import debounce from '@/utils/debounce';
 
 export default function usePdfObjectEventHandler<T extends HTMLElement>(objectElement: PdfObject) {
   const { id } = useIdGetter();
-  const modifyObjectCoordinate = usePdfDocumentStore((state) => state.modifyObjectCoordinate);
+  const modifyObject = usePdfDocumentStore((state) => state.modifyObject);
   const objectRef = React.useRef<T | null>(null);
 
   const handleDragStart: React.DragEventHandler<T> = (event) => {
@@ -38,8 +39,34 @@ export default function usePdfObjectEventHandler<T extends HTMLElement>(objectEl
     // Set the position of the draggable element
     objectRef.current.style.left = `${newLeft}px`;
     objectRef.current.style.top = `${newTop}px`;
-    modifyObjectCoordinate({ top: `${newTop}px`, left: `${newLeft}px` }, objectElement.id, id);
+    modifyObject((prev) => ({ ...prev, top: `${newTop}px`, left: `${newLeft}px` }), objectElement.id, id);
   };
+
+  const handleResize: React.ReactEventHandler<T> = React.useCallback(() => {
+    if (!id || !objectRef.current) return;
+    const newWidth = objectRef.current.offsetWidth;
+    const newHeight = objectRef.current.offsetHeight;
+    modifyObject((prev) => ({ ...prev, width: `${newWidth}px`, height: `${newHeight}px` }), objectElement.id, id);
+  }, [id, modifyObject, objectElement.id]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedHandleResize = React.useCallback(debounce(handleResize, 100), [handleResize]);
+
+  React.useEffect(
+    function observeObjectResize() {
+      if (!objectRef.current) return;
+      // ResizeObserver 설정
+      const observer = new ResizeObserver(debouncedHandleResize);
+      observer.observe(objectRef.current);
+
+      // 클린업 함수에서 observer 해제
+      return () => {
+        observer.disconnect();
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [objectRef.current],
+  );
 
   return {
     handleDragStart,

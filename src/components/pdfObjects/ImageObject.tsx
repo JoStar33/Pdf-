@@ -9,13 +9,15 @@ interface Props {
 
 export default function ImageObject({ objectElement }: Props) {
   const { objectRef, handleDragOver, handleDragStart, handleDragEnd } = usePdfObjectEventHandler<HTMLImageElement>(objectElement);
-  const { top, left, src } = objectElement;
+  const { top, left, width, height, src } = objectElement;
 
   return (
     <S.ImageObject
       style={{
         top,
         left,
+        width,
+        height,
       }}
       draggable={true}
       ref={objectRef}
@@ -38,6 +40,13 @@ const S = {
     position: absolute;
     z-index: 3;
     border: 1px solid black;
+    overflow: auto;
+    resize: both;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
     img {
       object-fit: cover;
       width: 100%;

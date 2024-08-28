@@ -1,5 +1,5 @@
 import { PdfDocument, PdfDocumentCreateForm, PdfDocumentModifyForm } from '@/types/pdfDocument';
-import { ObjectCoordinate, PdfImageObject, PdfImageObjectCreateForm } from '@/types/pdfObject';
+import { PdfAllObject, PdfImageObject, PdfImageObjectCreateForm } from '@/types/pdfObject';
 import { dateFormat } from '@/utils/dateFormat';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
@@ -9,7 +9,7 @@ interface PdfDocumentStore {
   uniqueId: number;
   createPdf: (pdfDocument: PdfDocumentCreateForm) => void;
   modifyPdf: (pdfDocument: PdfDocumentModifyForm, pdfDocumentId: number) => void;
-  modifyObjectCoordinate: (coordinate: ObjectCoordinate, objectId: number, pdfDocumentId: number) => void;
+  modifyObject: (fn: ((prev: PdfAllObject) => PdfAllObject) | PdfAllObject, objectId: number, pdfDocumentId: number) => void;
   deleteObject: (objectId: number, pdfDocumentId: number) => void;
   createImageObject: (pdfImageObject: PdfImageObjectCreateForm, pdfDocumentId: number) => void;
 }
@@ -34,15 +34,14 @@ export const usePdfDocumentStore = create(
           if (!findPdfDocument) throw new Error('PDF를 찾을 수 없습니다.');
           return { ...prev, pdfDocumentList: [...prev.pdfDocumentList, { ...findPdfDocument, ...pdfDocument }] };
         }),
-      modifyObjectCoordinate: (coordinate, objectId, pdfDocumentId) =>
+      modifyObject: (fn, objectId, pdfDocumentId) =>
         set((prev) => {
           const findPdfDocument = prev.pdfDocumentList.find((pdfDocument) => pdfDocument.id === pdfDocumentId);
           if (!findPdfDocument) throw new Error('PDF를 찾을 수 없습니다.');
           const findObject = findPdfDocument?.objects.find((objectElement) => objectElement.id === objectId);
           if (!findObject) throw new Error('오브젝트를 찾을 수 없습니다.');
           const modifiedPdfObject = {
-            ...findObject,
-            ...coordinate,
+            ...(typeof fn === 'function' ? fn(findObject) : fn),
           };
           return {
             ...prev,
