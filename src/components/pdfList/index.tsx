@@ -12,7 +12,7 @@ export default function PdfList({ pdfDocumentList }: Props) {
     <S.PdfList>
       <PdfRegisterButton />
       {pdfDocumentList.map((element) => (
-        <PdfCard element={element} />
+        <PdfCard key={element.id} element={element} />
       ))}
     </S.PdfList>
   );

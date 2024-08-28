@@ -5,7 +5,7 @@ import { usePdfDocumentStore } from '@/stores/pdfDocument';
 
 export default function usePdfObjectEventHandler<T extends HTMLElement>(objectElement: PdfObject) {
   const { id } = useIdGetter();
-  const { modifyObjectCoordinate } = usePdfDocumentStore();
+  const modifyObjectCoordinate = usePdfDocumentStore((state) => state.modifyObjectCoordinate);
   const objectRef = React.useRef<T | null>(null);
 
   const handleDragStart: React.DragEventHandler<T> = (event) => {

@@ -10,6 +10,7 @@ interface PdfDocumentStore {
   createPdf: (pdfDocument: PdfDocumentCreateForm) => void;
   modifyPdf: (pdfDocument: PdfDocumentModifyForm, pdfDocumentId: number) => void;
   modifyObjectCoordinate: (coordinate: ObjectCoordinate, objectId: number, pdfDocumentId: number) => void;
+  deleteObject: (objectId: number, pdfDocumentId: number) => void;
   createImageObject: (pdfImageObject: PdfImageObjectCreateForm, pdfDocumentId: number) => void;
 }
 
@@ -30,9 +31,7 @@ export const usePdfDocumentStore = create(
       modifyPdf: (pdfDocument, pdfDocumentId) =>
         set((prev) => {
           const findPdfDocument = prev.pdfDocumentList.find((pdfDocument) => pdfDocument.id === pdfDocumentId);
-          if (!findPdfDocument) {
-            throw new Error('PDF를 찾을 수 없습니다.');
-          }
+          if (!findPdfDocument) throw new Error('PDF를 찾을 수 없습니다.');
           return { ...prev, pdfDocumentList: [...prev.pdfDocumentList, { ...findPdfDocument, ...pdfDocument }] };
         }),
       modifyObjectCoordinate: (coordinate, objectId, pdfDocumentId) =>
@@ -43,8 +42,7 @@ export const usePdfDocumentStore = create(
           if (!findObject) throw new Error('오브젝트를 찾을 수 없습니다.');
           const modifiedPdfObject = {
             ...findObject,
-            top: coordinate.top,
-            left: coordinate.left,
+            ...coordinate,
           };
           return {
             ...prev,
@@ -55,6 +53,22 @@ export const usePdfDocumentStore = create(
                 ...findPdfDocument,
                 objects: [...findPdfDocument.objects.filter((objectElement) => objectElement.id !== objectId), modifiedPdfObject],
               },
+            ],
+          };
+        }),
+      deleteObject: (objectId, pdfDocumentId) =>
+        set((prev) => {
+          const findPdfDocument = prev.pdfDocumentList.find((pdfDocument) => pdfDocument.id === pdfDocumentId);
+          if (!findPdfDocument) throw new Error('PDF를 찾을 수 없습니다.');
+
+          const filteredObjects = findPdfDocument.objects.filter((objectElement) => objectElement.id !== objectId);
+
+          return {
+            ...prev,
+            uniqueId: prev.uniqueId + 1,
+            pdfDocumentList: [
+              ...prev.pdfDocumentList.filter((pdfDocument) => pdfDocument.id !== pdfDocumentId),
+              { ...findPdfDocument, objects: [...filteredObjects] },
             ],
           };
         }),

@@ -1,7 +1,6 @@
 import React from 'react';
 import Pdf from '@/components/pdf';
 import PdfPageController from '@/components/pdf/PdfPageController';
-import ImageObject from '@/components/pdfObjects/ImageObject';
 import useIdGetter from '@/hooks/useIdGetter';
 import { usePdfDocumentStore } from '@/stores/pdfDocument';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +11,7 @@ import PdfWrapper from '@/components/pdf/PdfWrapper';
 import PdfAside from '@/components/pdf/aside';
 import RandomImageButton from '@/components/pdf/aside/RandomImageButton';
 import randomImageUrl from '@/constants/randomImageUrl';
+import PdfObjectContainer from './PdfObjectContainer';
 
 const initPdfState = {
   numPages: 1,
@@ -89,10 +89,7 @@ export default function PdfContainer() {
         handleFileLoad={handleFileLoad}
         handleDropFileLoad={handleDropFileLoad}
       >
-        {findPdfDocument.objects.map((objectElement) => {
-          if ('src' in objectElement) return <ImageObject key={objectElement.id} objectElement={objectElement} />;
-          return <></>;
-        })}
+        <PdfObjectContainer objects={findPdfDocument.objects} />
         <PdfPageController setPage={setPage} currentPage={pageNumber} lastPage={numPages} />
       </Pdf>
     </PdfWrapper>
