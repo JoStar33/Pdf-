@@ -35,6 +35,7 @@ export default function PdfContainer() {
   const { id } = useIdGetter();
   const { pdfDocumentList, uniqueId, createPdf, createImageObject } = usePdfDocumentStore();
   const findPdfDocument = pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument;
+  const currentObjectLength = findPdfDocument.objects.length;
   const [pdfPageInfo, setPdfPageInfo] = React.useState<PdfPageInfo>(initPdfState);
   const { pageNumber, numPages } = pdfPageInfo;
 
@@ -65,7 +66,7 @@ export default function PdfContainer() {
   };
 
   const handleGenerateRandomImage = () => {
-    if (!id) return;
+    if (!id || currentObjectLength > 15) return;
     const randomIndex = Math.floor(Math.random() * 5);
     createImageObject({ src: randomImageUrl[randomIndex] }, id);
   };

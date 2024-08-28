@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { Document, Page } from 'react-pdf';
 import { PdfPageInfo } from '@/containers/PdfContainer';
-import PdfFileUploader from '@/components/common/PdfFileUploader';
+import PdfFileUploader from '@/components/pdf/PdfFileUploader';
 import { PdfDocument } from '@/types/pdfDocument';
+import PdfLoading from '@/components/pdf/PdfLoading';
 
 interface Props {
   pdfDocument: PdfDocument;
@@ -26,7 +27,7 @@ export default function Pdf({ pdfPageInfo, pdfDocument, handleDropFileLoad, hand
 
   return (
     <S.Pdf>
-      <Document className="pdf-viewer drop-zone" file={file} onLoadSuccess={handleDocumentLoadSuccess}>
+      <Document className="pdf-viewer drop-zone" file={file} loading={<PdfLoading />} onLoadSuccess={handleDocumentLoadSuccess}>
         {new Array(numPages).fill('').map((_, index) => {
           if (pageNumber === index + 1) return <Page key={index} pageNumber={index + 1} />;
           return <></>;
