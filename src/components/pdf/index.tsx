@@ -23,23 +23,23 @@ interface Props {
   children?: React.ReactNode;
 }
 
+const onSwiperInit = (swiper: SwiperClass) => {
+  swiper.el.style.visibility = 'visible';
+  swiper.el.style.opacity = '1';
+};
+
+const swiperStyles: React.CSSProperties = {
+  visibility: 'hidden',
+  opacity: 0,
+  transition: 'opacity 0.3s ease-in-out',
+};
+
 export default React.forwardRef<HTMLDivElement, Props>(function Pdf(
   { pdfPageInfo, pdfDocument, handleDropFileLoad, handleFileLoad, handleDocumentLoadSuccess, handleSwiperSlide, onTitleSubmit, children },
   ref,
 ) {
   const { numPages } = pdfPageInfo;
   const { file } = pdfDocument;
-
-  const onSwiperInit = (swiper: SwiperClass) => {
-    swiper.el.style.visibility = 'visible';
-    swiper.el.style.opacity = '1';
-  };
-
-  const swiperStyles: React.CSSProperties = {
-    visibility: 'hidden',
-    opacity: 0,
-    transition: 'opacity 0.3s ease-in-out',
-  };
 
   if (!file)
     return (

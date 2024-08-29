@@ -35,9 +35,7 @@ const defaultDocument = {
 export default function PdfContainer() {
   const { id } = useIdGetter();
   const { pdfDocumentList, createImageObject, modifyPdf } = usePdfDocumentStore();
-  const findPdfDocument = pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument;
   const [pdfPageInfo, setPdfPageInfo] = React.useState<PdfPageInfo>(initPdfState);
-  const { currentPage } = pdfPageInfo;
   const methods = useForm<PdfDocumentTitleForm>({
     defaultValues: {
       title: '',
@@ -47,7 +45,12 @@ export default function PdfContainer() {
   const { handleDropFileLoad, handleFileLoad } = usePdfUploadHandler();
   const { pdfDivRef, handleDownloadPdf } = usePdfDownload();
 
+  const findPdfDocument = React.useMemo(
+    () => pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument,
+    [pdfDocumentList, id],
+  );
   const currentObjectLength = findPdfDocument.objects.length;
+  const { currentPage } = pdfPageInfo;
 
   const handleGenerateRandomImage = () => {
     if (!id || currentObjectLength > 15) return;
