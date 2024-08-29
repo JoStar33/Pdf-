@@ -14,6 +14,7 @@ const S = {
     min-width: calc(25% - 15px);
     width: calc(25% - 15px);
     margin: 5px 0px 5px 5px;
+    gap: 5px;
     display: flex;
     flex-direction: column;
   `,

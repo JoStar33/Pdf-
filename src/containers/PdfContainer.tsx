@@ -2,10 +2,7 @@ import React from 'react';
 import Pdf from '@/components/pdf';
 import useIdGetter from '@/hooks/useIdGetter';
 import { usePdfDocumentStore } from '@/stores/pdfDocument';
-import { useNavigate } from 'react-router-dom';
 import { PdfDocument, PdfDocumentTitleForm } from '@/types/pdfDocument';
-import changeFileToBase64 from '@/utils/changeFileToBase64';
-import routerPath from '@/constants/routerPath';
 import PdfWrapper from '@/components/pdf/PdfWrapper';
 import PdfAside from '@/components/pdf/aside';
 import RandomImageButton from '@/components/pdf/aside/RandomImageButton';
@@ -14,6 +11,9 @@ import PdfObjectContainer from './PdfObjectContainer';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from '@/utils/validate/schema';
+import usePdfDownload from '@/hooks/usePdfDownload';
+import PdfDownloadButton from '@/components/pdf/aside/PdfDownloadButton';
+import usePdfUploadHandler from '@/hooks/usePdfUploadHandler';
 
 const initPdfState = {
   numPages: 1,
@@ -31,9 +31,8 @@ const defaultDocument = {
 } as unknown as PdfDocument;
 
 export default function PdfContainer() {
-  const navigator = useNavigate();
   const { id } = useIdGetter();
-  const { pdfDocumentList, uniqueId, createPdf, createImageObject, modifyPdf } = usePdfDocumentStore();
+  const { pdfDocumentList, createImageObject, modifyPdf } = usePdfDocumentStore();
   const findPdfDocument = pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument;
   const [pdfPageInfo, setPdfPageInfo] = React.useState<PdfPageInfo>(initPdfState);
   const methods = useForm<PdfDocumentTitleForm>({
@@ -42,29 +41,10 @@ export default function PdfContainer() {
     },
     resolver: yupResolver(schema.pdfTitleSchema),
   });
+  const { handleDropFileLoad, handleFileLoad } = usePdfUploadHandler();
+  const { pdfDivRef, handleDownloadPdf } = usePdfDownload();
+
   const currentObjectLength = findPdfDocument.objects.length;
-
-  const createPdfAsArrayBuffer = (file: string) => {
-    createPdf({
-      file,
-    });
-  };
-
-  const handleFileLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files) return;
-    const selectedFile = event.target.files[0];
-    if (!selectedFile) return;
-    changeFileToBase64(selectedFile, createPdfAsArrayBuffer);
-    navigator(`${routerPath.PDF}/${uniqueId}`);
-  };
-
-  const handleDropFileLoad = (fileList: FileList) => {
-    const acceptedFiles = Array.from(fileList);
-    if (acceptedFiles.length === 0) return;
-    const selectedFile = acceptedFiles[0];
-    changeFileToBase64(selectedFile, createPdfAsArrayBuffer);
-    navigator(`${routerPath.PDF}/${uniqueId}`);
-  };
 
   const handleGenerateRandomImage = () => {
     if (!id || currentObjectLength > 15) return;
@@ -82,21 +62,26 @@ export default function PdfContainer() {
     onSuccess();
   };
 
-  React.useEffect(() => {
-    if (!findPdfDocument) return;
-    methods.setValue('title', findPdfDocument.title ?? '');
+  React.useEffect(
+    function initializePdfTitle() {
+      if (!findPdfDocument) return;
+      methods.setValue('title', findPdfDocument.title ?? '');
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [findPdfDocument]);
+    [findPdfDocument],
+  );
 
   return (
     <PdfWrapper>
       {findPdfDocument.file && (
         <PdfAside>
           <RandomImageButton handleClick={handleGenerateRandomImage} />
+          <PdfDownloadButton handleDownloadPdf={() => handleDownloadPdf(findPdfDocument.title)} />
         </PdfAside>
       )}
       <FormProvider {...methods}>
         <Pdf
+          ref={pdfDivRef}
           pdfDocument={findPdfDocument}
           pdfPageInfo={pdfPageInfo}
           handleDocumentLoadSuccess={handleDocumentLoadSuccess}

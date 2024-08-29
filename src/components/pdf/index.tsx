@@ -10,6 +10,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Navigation, Pagination } from 'swiper/modules';
 import PdfTitleInput from './PdfTitleInput';
+import React from 'react';
 
 interface Props {
   pdfDocument: PdfDocument;
@@ -21,15 +22,10 @@ interface Props {
   children?: React.ReactNode;
 }
 
-export default function Pdf({
-  pdfPageInfo,
-  pdfDocument,
-  handleDropFileLoad,
-  handleFileLoad,
-  handleDocumentLoadSuccess,
-  onTitleSubmit,
-  children,
-}: Props) {
+export default React.forwardRef<HTMLDivElement, Props>(function Pdf(
+  { pdfPageInfo, pdfDocument, handleDropFileLoad, handleFileLoad, handleDocumentLoadSuccess, onTitleSubmit, children },
+  ref,
+) {
   const { numPages } = pdfPageInfo;
   const { file } = pdfDocument;
 
@@ -53,6 +49,7 @@ export default function Pdf({
 
   return (
     <S.Pdf
+      ref={ref}
       onDragOver={(event) => {
         event.preventDefault();
       }}
@@ -80,7 +77,7 @@ export default function Pdf({
       {children}
     </S.Pdf>
   );
-}
+});
 
 const S = {
   Pdf: styled.div`
