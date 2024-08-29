@@ -65,11 +65,12 @@ export default React.forwardRef<HTMLDivElement, Props>(function Pdf(
           modules={[Navigation, Pagination]}
           navigation={true}
           onInit={onSwiperInit}
+          onSwiper={() => {}}
           style={swiperStyles}
         >
           {new Array(numPages).fill('').map((_, index) => (
             <SwiperSlide key={index} className="web-swiper">
-              <Page pageNumber={index + 1} />
+              <Page pageNumber={index + 1} height={800} />
             </SwiperSlide>
           ))}
         </Swiper>

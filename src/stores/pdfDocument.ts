@@ -9,6 +9,7 @@ interface PdfDocumentStore {
   uniqueId: number;
   createPdf: (pdfDocument: PdfDocumentCreateForm) => void;
   modifyPdf: (fn: ((prev: PdfDocument) => PdfDocument) | PdfDocument, pdfDocumentId: number) => void;
+  deletePdf: (pdfDocumentId: number) => void;
   modifyObject: (fn: ((prev: PdfAllObject) => PdfAllObject) | PdfAllObject, objectId: number, pdfDocumentId: number) => void;
   deleteObject: (objectId: number, pdfDocumentId: number) => void;
   createImageObject: (pdfImageObject: PdfImageObjectCreateForm, pdfDocumentId: number) => void;
@@ -40,6 +41,8 @@ export const usePdfDocumentStore = create(
             pdfDocumentList: [...prev.pdfDocumentList.filter((pdfElement) => pdfElement.id !== pdfDocumentId), modifiedPdfDocument],
           };
         }),
+      deletePdf: (pdfDocumentId) =>
+        set((prev) => ({ ...prev, pdfDocumentList: [...prev.pdfDocumentList.filter((pdfDocument) => pdfDocument.id !== pdfDocumentId)] })),
       modifyObject: (fn, objectId, pdfDocumentId) =>
         set((prev) => {
           const findPdfDocument = prev.pdfDocumentList.find((pdfDocument) => pdfDocument.id === pdfDocumentId);

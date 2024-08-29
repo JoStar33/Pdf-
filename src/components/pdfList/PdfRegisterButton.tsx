@@ -25,6 +25,7 @@ const S = {
     width: calc(33% - 10px);
     margin: 5px;
     aspect-ratio: 1.2;
+    height: fit-content;
     .register-button {
       cursor: pointer;
       width: 100%;

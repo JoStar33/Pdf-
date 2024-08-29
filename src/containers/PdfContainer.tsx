@@ -17,10 +17,12 @@ import usePdfUploadHandler from '@/hooks/usePdfUploadHandler';
 
 const initPdfState = {
   numPages: 1,
+  currentPage: 1,
 };
 
 export interface PdfPageInfo {
   numPages: number;
+  currentPage: number;
 }
 
 const defaultDocument = {
@@ -55,6 +57,8 @@ export default function PdfContainer() {
   const handleDocumentLoadSuccess = (pdf: { numPages: number }) => {
     setPdfPageInfo((prev) => ({ ...prev, numPages: pdf.numPages }));
   };
+
+  // const handle
 
   const onTitleSubmit = (submitData: PdfDocumentTitleForm, onSuccess: () => void) => {
     if (!id) return;
