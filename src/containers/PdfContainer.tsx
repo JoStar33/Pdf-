@@ -3,7 +3,7 @@ import Pdf from '@/components/pdf';
 import useIdGetter from '@/hooks/useIdGetter';
 import { usePdfDocumentStore } from '@/stores/pdfDocument';
 import { useNavigate } from 'react-router-dom';
-import { PdfDocument } from '@/types/pdfDocument';
+import { PdfDocument, PdfDocumentTitleForm } from '@/types/pdfDocument';
 import changeFileToBase64 from '@/utils/changeFileToBase64';
 import routerPath from '@/constants/routerPath';
 import PdfWrapper from '@/components/pdf/PdfWrapper';
@@ -11,6 +11,9 @@ import PdfAside from '@/components/pdf/aside';
 import RandomImageButton from '@/components/pdf/aside/RandomImageButton';
 import randomImageUrl from '@/constants/randomImageUrl';
 import PdfObjectContainer from './PdfObjectContainer';
+import { FormProvider, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { schema } from '@/utils/validate/schema';
 
 const initPdfState = {
   numPages: 1,
@@ -30,10 +33,16 @@ const defaultDocument = {
 export default function PdfContainer() {
   const navigator = useNavigate();
   const { id } = useIdGetter();
-  const { pdfDocumentList, uniqueId, createPdf, createImageObject } = usePdfDocumentStore();
+  const { pdfDocumentList, uniqueId, createPdf, createImageObject, modifyPdf } = usePdfDocumentStore();
   const findPdfDocument = pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument;
-  const currentObjectLength = findPdfDocument.objects.length;
   const [pdfPageInfo, setPdfPageInfo] = React.useState<PdfPageInfo>(initPdfState);
+  const methods = useForm<PdfDocumentTitleForm>({
+    defaultValues: {
+      title: '',
+    },
+    resolver: yupResolver(schema.pdfTitleSchema),
+  });
+  const currentObjectLength = findPdfDocument.objects.length;
 
   const createPdfAsArrayBuffer = (file: string) => {
     createPdf({
@@ -67,6 +76,18 @@ export default function PdfContainer() {
     setPdfPageInfo((prev) => ({ ...prev, numPages: pdf.numPages }));
   };
 
+  const onTitleSubmit = (submitData: PdfDocumentTitleForm, onSuccess: () => void) => {
+    if (!id) return;
+    modifyPdf((prev) => ({ ...prev, title: submitData.title }), id);
+    onSuccess();
+  };
+
+  React.useEffect(() => {
+    if (!findPdfDocument) return;
+    methods.setValue('title', findPdfDocument.title ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [findPdfDocument]);
+
   return (
     <PdfWrapper>
       {findPdfDocument.file && (
@@ -74,15 +95,18 @@ export default function PdfContainer() {
           <RandomImageButton handleClick={handleGenerateRandomImage} />
         </PdfAside>
       )}
-      <Pdf
-        pdfDocument={findPdfDocument}
-        pdfPageInfo={pdfPageInfo}
-        handleDocumentLoadSuccess={handleDocumentLoadSuccess}
-        handleFileLoad={handleFileLoad}
-        handleDropFileLoad={handleDropFileLoad}
-      >
-        <PdfObjectContainer objects={findPdfDocument.objects} />
-      </Pdf>
+      <FormProvider {...methods}>
+        <Pdf
+          pdfDocument={findPdfDocument}
+          pdfPageInfo={pdfPageInfo}
+          handleDocumentLoadSuccess={handleDocumentLoadSuccess}
+          handleFileLoad={handleFileLoad}
+          handleDropFileLoad={handleDropFileLoad}
+          onTitleSubmit={onTitleSubmit}
+        >
+          <PdfObjectContainer objects={findPdfDocument.objects} />
+        </Pdf>
+      </FormProvider>
     </PdfWrapper>
   );
 }

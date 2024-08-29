@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Header from './Header';
 
 interface Props {
   children: React.ReactNode;
@@ -8,7 +9,10 @@ interface Props {
 export default function Layout({ children }: Props) {
   return (
     <S.Layout>
-      <div className="layout__cover">{children}</div>
+      <div className="layout__cover">
+        <Header />
+        {children}
+      </div>
     </S.Layout>
   );
 }

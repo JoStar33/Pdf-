@@ -1,5 +1,6 @@
 type PdfObjectTypes = 'IMAGE' | 'TEXT' | 'INPUT';
 
+/*************************** Domain & DTO ***************************/
 export interface ObjectCoordinate {
   top: string;
   left: string;
@@ -21,6 +22,8 @@ export interface PdfTextObject extends PdfObject {
 }
 
 export type PdfAllObject = PdfImageObject | PdfTextObject;
+
+/******************************* Form ********************************/
 
 export interface PdfImageObjectCreateForm {
   src: string;

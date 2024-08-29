@@ -2,13 +2,14 @@ import styled from 'styled-components';
 import { Document, Page } from 'react-pdf';
 import { PdfPageInfo } from '@/containers/PdfContainer';
 import PdfFileUploader from '@/components/pdf/PdfFileUploader';
-import { PdfDocument } from '@/types/pdfDocument';
+import { PdfDocument, PdfDocumentTitleForm } from '@/types/pdfDocument';
 import PdfLoading from '@/components/pdf/PdfLoading';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Navigation, Pagination } from 'swiper/modules';
+import PdfTitleInput from './PdfTitleInput';
 
 interface Props {
   pdfDocument: PdfDocument;
@@ -16,19 +17,21 @@ interface Props {
   handleFileLoad: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleDocumentLoadSuccess: ({ numPages }: { numPages: number }) => void;
   handleDropFileLoad: (fileList: FileList) => void;
+  onTitleSubmit: (submitData: PdfDocumentTitleForm, onSuccess: () => void) => void;
   children?: React.ReactNode;
 }
 
-export default function Pdf({ pdfPageInfo, pdfDocument, handleDropFileLoad, handleFileLoad, handleDocumentLoadSuccess, children }: Props) {
+export default function Pdf({
+  pdfPageInfo,
+  pdfDocument,
+  handleDropFileLoad,
+  handleFileLoad,
+  handleDocumentLoadSuccess,
+  onTitleSubmit,
+  children,
+}: Props) {
   const { numPages } = pdfPageInfo;
   const { file } = pdfDocument;
-
-  if (!file)
-    return (
-      <S.Pdf style={{ maxWidth: '100%', width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <PdfFileUploader handleDropFileLoad={handleDropFileLoad} handleFileLoad={handleFileLoad} />
-      </S.Pdf>
-    );
 
   const onSwiperInit = (swiper: SwiperClass) => {
     swiper.el.style.visibility = 'visible';
@@ -41,8 +44,20 @@ export default function Pdf({ pdfPageInfo, pdfDocument, handleDropFileLoad, hand
     transition: 'opacity 0.3s ease-in-out',
   };
 
+  if (!file)
+    return (
+      <S.Pdf style={{ maxWidth: '100%', width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <PdfFileUploader handleDropFileLoad={handleDropFileLoad} handleFileLoad={handleFileLoad} />
+      </S.Pdf>
+    );
+
   return (
-    <S.Pdf>
+    <S.Pdf
+      onDragOver={(event) => {
+        event.preventDefault();
+      }}
+    >
+      <PdfTitleInput onTitleSubmit={onTitleSubmit} />
       <Document className="pdf-viewer" file={file} loading={<PdfLoading />} onLoadSuccess={handleDocumentLoadSuccess}>
         <Swiper
           pagination={{
@@ -71,6 +86,6 @@ const S = {
   Pdf: styled.div`
     margin: 5px;
     position: relative;
-    max-width: 75%;
+    min-width: 75%;
   `,
 };

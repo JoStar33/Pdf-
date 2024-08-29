@@ -1,4 +1,4 @@
-import { PdfDocument, PdfDocumentCreateForm, PdfDocumentModifyForm } from '@/types/pdfDocument';
+import { PdfDocument, PdfDocumentCreateForm } from '@/types/pdfDocument';
 import { PdfAllObject, PdfImageObject, PdfImageObjectCreateForm } from '@/types/pdfObject';
 import { dateFormat } from '@/utils/dateFormat';
 import { create } from 'zustand';
@@ -8,7 +8,7 @@ interface PdfDocumentStore {
   pdfDocumentList: PdfDocument[];
   uniqueId: number;
   createPdf: (pdfDocument: PdfDocumentCreateForm) => void;
-  modifyPdf: (pdfDocument: PdfDocumentModifyForm, pdfDocumentId: number) => void;
+  modifyPdf: (fn: ((prev: PdfDocument) => PdfDocument) | PdfDocument, pdfDocumentId: number) => void;
   modifyObject: (fn: ((prev: PdfAllObject) => PdfAllObject) | PdfAllObject, objectId: number, pdfDocumentId: number) => void;
   deleteObject: (objectId: number, pdfDocumentId: number) => void;
   createImageObject: (pdfImageObject: PdfImageObjectCreateForm, pdfDocumentId: number) => void;
@@ -28,11 +28,17 @@ export const usePdfDocumentStore = create(
             { ...pdfDocument, id: prev.uniqueId, objects: [], createdAt: dateFormat.date5(String(new Date())), file: pdfDocument.file },
           ],
         })),
-      modifyPdf: (pdfDocument, pdfDocumentId) =>
+      modifyPdf: (fn, pdfDocumentId) =>
         set((prev) => {
           const findPdfDocument = prev.pdfDocumentList.find((pdfDocument) => pdfDocument.id === pdfDocumentId);
           if (!findPdfDocument) throw new Error('PDF를 찾을 수 없습니다.');
-          return { ...prev, pdfDocumentList: [...prev.pdfDocumentList, { ...findPdfDocument, ...pdfDocument }] };
+          const modifiedPdfDocument = {
+            ...(typeof fn === 'function' ? fn(findPdfDocument) : fn),
+          };
+          return {
+            ...prev,
+            pdfDocumentList: [...prev.pdfDocumentList.filter((pdfElement) => pdfElement.id !== pdfDocumentId), modifiedPdfDocument],
+          };
         }),
       modifyObject: (fn, objectId, pdfDocumentId) =>
         set((prev) => {
