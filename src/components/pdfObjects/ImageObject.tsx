@@ -2,9 +2,11 @@ import usePdfObjectEventHandler from '@/hooks/usePdfObjectEventHandler';
 import { PdfImageObject } from '@/types/pdfObject';
 import styled from 'styled-components';
 import ObjectDeleteButton from './ObjectDeleteButton';
+import React from 'react';
 
 interface Props {
   objectElement: PdfImageObject;
+  currentPage: number;
 }
 
 /**
@@ -12,9 +14,11 @@ interface Props {
  * @param objectElement 오브젝트
  * @returns 이미지 컴포넌트
  */
-export default function ImageObject({ objectElement }: Props) {
-  const { objectRef, handleDragOver, handleDragStart, handleDragEnd } = usePdfObjectEventHandler<HTMLImageElement>(objectElement);
-  const { top, left, width, height, src } = objectElement;
+export default React.memo(function ImageObject({ objectElement, currentPage }: Props) {
+  const { objectRef, handleDragOver, handleDragStart, handleDragEnd } = usePdfObjectEventHandler<HTMLDivElement>(objectElement);
+  const { top, left, width, height, src, page } = objectElement;
+
+  if (page !== currentPage) return <></>;
 
   return (
     <S.ImageObject
@@ -34,7 +38,7 @@ export default function ImageObject({ objectElement }: Props) {
       <ObjectDeleteButton objectId={objectElement.id} />
     </S.ImageObject>
   );
-}
+});
 
 const S = {
   ImageObject: styled.div`
@@ -47,10 +51,10 @@ const S = {
     border: 1px solid black;
     overflow: auto;
     resize: both;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     ::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera*/
+      display: none;
     }
     img {
       object-fit: cover;

@@ -18,12 +18,13 @@ interface Props {
   handleFileLoad: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleDocumentLoadSuccess: ({ numPages }: { numPages: number }) => void;
   handleDropFileLoad: (fileList: FileList) => void;
+  handleSwiperSlide: (page: number) => void;
   onTitleSubmit: (submitData: PdfDocumentTitleForm, onSuccess: () => void) => void;
   children?: React.ReactNode;
 }
 
 export default React.forwardRef<HTMLDivElement, Props>(function Pdf(
-  { pdfPageInfo, pdfDocument, handleDropFileLoad, handleFileLoad, handleDocumentLoadSuccess, onTitleSubmit, children },
+  { pdfPageInfo, pdfDocument, handleDropFileLoad, handleFileLoad, handleDocumentLoadSuccess, handleSwiperSlide, onTitleSubmit, children },
   ref,
 ) {
   const { numPages } = pdfPageInfo;
@@ -65,7 +66,7 @@ export default React.forwardRef<HTMLDivElement, Props>(function Pdf(
           modules={[Navigation, Pagination]}
           navigation={true}
           onInit={onSwiperInit}
-          onSwiper={() => {}}
+          onSlideChange={(swiper) => handleSwiperSlide(swiper.activeIndex + 1)}
           style={swiperStyles}
         >
           {new Array(numPages).fill('').map((_, index) => (

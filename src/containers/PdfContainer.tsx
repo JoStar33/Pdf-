@@ -37,6 +37,7 @@ export default function PdfContainer() {
   const { pdfDocumentList, createImageObject, modifyPdf } = usePdfDocumentStore();
   const findPdfDocument = pdfDocumentList.find((pdfDocument) => pdfDocument.id === id) ?? defaultDocument;
   const [pdfPageInfo, setPdfPageInfo] = React.useState<PdfPageInfo>(initPdfState);
+  const { currentPage } = pdfPageInfo;
   const methods = useForm<PdfDocumentTitleForm>({
     defaultValues: {
       title: '',
@@ -51,14 +52,16 @@ export default function PdfContainer() {
   const handleGenerateRandomImage = () => {
     if (!id || currentObjectLength > 15) return;
     const randomIndex = Math.floor(Math.random() * 5);
-    createImageObject({ src: randomImageUrl[randomIndex] }, id);
+    createImageObject({ src: randomImageUrl[randomIndex] }, id, currentPage);
   };
 
   const handleDocumentLoadSuccess = (pdf: { numPages: number }) => {
     setPdfPageInfo((prev) => ({ ...prev, numPages: pdf.numPages }));
   };
 
-  // const handle
+  const handleSwiperSlide = (page: number) => {
+    setPdfPageInfo((prev) => ({ ...prev, currentPage: page }));
+  };
 
   const onTitleSubmit = (submitData: PdfDocumentTitleForm, onSuccess: () => void) => {
     if (!id) return;
@@ -91,9 +94,10 @@ export default function PdfContainer() {
           handleDocumentLoadSuccess={handleDocumentLoadSuccess}
           handleFileLoad={handleFileLoad}
           handleDropFileLoad={handleDropFileLoad}
+          handleSwiperSlide={handleSwiperSlide}
           onTitleSubmit={onTitleSubmit}
         >
-          <PdfObjectContainer objects={findPdfDocument.objects} />
+          <PdfObjectContainer currentPage={currentPage} objects={findPdfDocument.objects} />
         </Pdf>
       </FormProvider>
     </PdfWrapper>

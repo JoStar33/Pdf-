@@ -1,15 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import Header from './Header';
+import DarkBackground from '@/components/common/DarkBackground';
+import Loading from '@/components/common/Loading';
+import { useLoadingStore } from '@/stores/loading';
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function Layout({ children }: Props) {
+  const { isLoading } = useLoadingStore();
+
   return (
     <S.Layout>
       <div className="layout__cover">
+        {isLoading && (
+          <DarkBackground>
+            <Loading mode="fixed" />
+          </DarkBackground>
+        )}
         <Header />
         {children}
       </div>

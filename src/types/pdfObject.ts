@@ -8,6 +8,7 @@ export interface ObjectCoordinate {
 
 export interface PdfObject extends ObjectCoordinate {
   id: number;
+  page: number;
   type: PdfObjectTypes;
   width: string;
   height: string;

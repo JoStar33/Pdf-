@@ -7,11 +7,10 @@ import debounce from '@/utils/debounce';
 export default function usePdfObjectEventHandler<T extends HTMLElement>(objectElement: PdfObject) {
   const { id } = useIdGetter();
   const modifyObject = usePdfDocumentStore((state) => state.modifyObject);
-  const objectRef = React.useRef<T | null>(null);
+  const objectRef = React.useRef<T>(null);
 
   const handleDragStart: React.DragEventHandler<T> = (event) => {
     event.dataTransfer.setData('text/plain', '');
-    event.currentTarget.classList.add('dragging');
   };
 
   const handleDragOver: React.DragEventHandler<T> = (event) => {
@@ -20,7 +19,7 @@ export default function usePdfObjectEventHandler<T extends HTMLElement>(objectEl
 
   const handleDragEnd: React.DragEventHandler<T> = (event) => {
     event.preventDefault();
-    if (!objectRef.current || !objectRef.current.parentElement || !id || !event.currentTarget.classList.contains('dragging')) return;
+    if (!objectRef.current || !objectRef.current.parentElement || !id) return;
 
     // Get the parent element's position
     const parentRect = objectRef.current.parentElement.getBoundingClientRect();

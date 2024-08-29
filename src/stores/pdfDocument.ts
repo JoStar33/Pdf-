@@ -12,7 +12,7 @@ interface PdfDocumentStore {
   deletePdf: (pdfDocumentId: number) => void;
   modifyObject: (fn: ((prev: PdfAllObject) => PdfAllObject) | PdfAllObject, objectId: number, pdfDocumentId: number) => void;
   deleteObject: (objectId: number, pdfDocumentId: number) => void;
-  createImageObject: (pdfImageObject: PdfImageObjectCreateForm, pdfDocumentId: number) => void;
+  createImageObject: (pdfImageObject: PdfImageObjectCreateForm, pdfDocumentId: number, currentPage: number) => void;
 }
 
 export const usePdfDocumentStore = create(
@@ -80,12 +80,13 @@ export const usePdfDocumentStore = create(
             ],
           };
         }),
-      createImageObject: (pdfImageObject, pdfDocumentId) =>
+      createImageObject: (pdfImageObject, pdfDocumentId, currentPage) =>
         set((prev) => {
           const findPdfDocument = prev.pdfDocumentList.find((pdfDocument) => pdfDocument.id === pdfDocumentId);
           const newPdfImageObject: PdfImageObject = {
             ...pdfImageObject,
             id: prev.uniqueId,
+            page: currentPage,
             top: '10px',
             left: '10px',
             width: '100px',
