@@ -25,8 +25,8 @@ export default function usePdfObjectEventHandler<T extends HTMLElement>(objectEl
     const parentRect = objectRef.current.parentElement.getBoundingClientRect();
 
     // Calculate the new position for the dropped element
-    const newLeft = event.clientX - parentRect.left - objectRef.current.offsetWidth / 2;
-    const newTop = event.clientY - parentRect.top - objectRef.current.offsetHeight / 2;
+    const newLeft = event.clientX - parentRect.left - parseInt(objectRef.current.style.width.replaceAll('px', '')) / 2;
+    const newTop = event.clientY - parentRect.top - parseInt(objectRef.current.style.height.replaceAll('px', '')) / 2;
     const isPdfZone =
       event.clientX >= parentRect.left &&
       event.clientX <= parentRect.right &&
@@ -43,9 +43,9 @@ export default function usePdfObjectEventHandler<T extends HTMLElement>(objectEl
 
   const handleResize: React.ReactEventHandler<T> = React.useCallback(() => {
     if (!id || !objectRef.current) return;
-    const newWidth = objectRef.current.offsetWidth;
-    const newHeight = objectRef.current.offsetHeight;
-    modifyObject((prev) => ({ ...prev, width: `${newWidth}px`, height: `${newHeight}px` }), objectElement.id, id);
+    const newWidth = objectRef.current.style.width;
+    const newHeight = objectRef.current.style.height;
+    modifyObject((prev) => ({ ...prev, width: newWidth, height: newHeight }), objectElement.id, id);
   }, [id, modifyObject, objectElement.id]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
