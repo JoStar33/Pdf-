@@ -12,16 +12,14 @@ export default function usePdfDownload() {
   const handleDownloadPdf = async (title: string = '제목없음') => {
     if (!pdfDivRef.current) return;
     const currentPdfView = pdfDivRef.current;
-    const pdfWidth = parseInt(currentPdfView.style.width.replaceAll('px', ''));
-    const pdfHeight = parseInt(currentPdfView.style.height.replaceAll('px', ''));
     if (isLoading) return;
     setIsLoading(true);
     try {
       const canvas = await html2canvas(pdfDivRef.current, { scale: 2 });
-      const doc = new jsPDF('p', 'px', [pdfWidth, pdfHeight]);
+      const doc = new jsPDF('p', 'px', [currentPdfView.offsetWidth, currentPdfView.offsetHeight]);
 
       const imgData = canvas.toDataURL('image/png', 1.0);
-      doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      doc.addImage(imgData, 'PNG', 0, 0, currentPdfView.offsetWidth, currentPdfView.offsetHeight);
       const submissionTitle = title;
       const file = URL.createObjectURL(new Blob([doc.output('blob')], { type: 'application/pdf' }));
       const date = dateFormat.date4(String(new Date()));
